@@ -1,0 +1,11 @@
+body {
+  font-weight: bold;
+}
+
+.content {
+  min-height: 100vh;
+}
+
+.nav li a:hover {
+  font-weight: bold;
+}
