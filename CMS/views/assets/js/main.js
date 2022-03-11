@@ -424,6 +424,28 @@ function borrarVentaTransferencia(id){
     })
 }
 
+function borrarVentaMercado(id){
+    
+    var idVentaMercado = id;
+
+    Swal.fire({
+        title: '¿Estás seguro de borrar la venta?',
+        text: '¡Si no lo está puede cancelar la acción!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: 'Cancelar',
+        confirmButtonText: '¡Si, borrar la venta!'
+    }).then((result)=>{
+
+        if(result.value){
+
+            window.location = "index.php?pagina=ventas&idVentaMercado="+idVentaMercado;
+        }
+    })
+}
+
 
 
 

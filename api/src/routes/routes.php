@@ -6,8 +6,6 @@ use \Psr\Http\Message\ResponseInterface as Response;
 $app = new \Slim\App;
 
 
-// Agrega credenciales
-MercadoPago\SDK::setAccessToken('TEST-5415771435113542-051218-47ba16d5357e371d6d1aa827caacac9a-387850437');
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -399,17 +397,41 @@ $app->post('/api/transferencia', function (Request $request, Response $response)
 });
 
 
-//Enviar suscripciones
+//Enviar mercado pago
 $app->post('/api/mercado', function (Request $request, Response $response) {
 
-    // Crea un objeto de preferencia
-    $preference = new MercadoPago\Preference();
+    $c = $request->getParam('cliente');
+    $cliente = json_encode($c);
+    $e = $request->getParam('envio');
+    $envio = json_encode($e);
+    $p = $request->getParam('items');
+    $productos = json_encode($p);
+    $total = $request->getParam('total');
+    $operacion = $request->getParam('operacion');
+    $metodo = $request->getParam('metodo');
+    $num_transaccion = $request->getParam('num_transaccion');
 
-    // Crea un ítem en la preferencia
-    $item = new MercadoPago\Item();
-    $item->title = 'Mi producto';
-    $item->quantity = 1;
-    $item->unit_price = 75.56;
-    $preference->items = array($item);
-    $preference->save();
+    $sql = "INSERT INTO mercado_pago (cliente, envio, items, total, operacion, metodo, num_transaccion) VALUES (:cliente, :envio, :items, :total, :operacion, :metodo, :num_transaccion)";
+
+    try {
+        $db = new Conexion();
+        $db = $db->conectar();
+        $resultado = $db->prepare($sql);
+
+        $resultado->bindParam(':cliente', $cliente);
+        $resultado->bindParam(':envio', $envio);
+        $resultado->bindParam(':items', $productos);
+        $resultado->bindParam(':total', $total);
+        $resultado->bindParam(':operacion', $operacion);
+        $resultado->bindParam(':metodo', $metodo);
+        $resultado->bindParam(':num_transaccion', $num_transaccion);
+
+        $resultado->execute();
+        echo json_encode('¡Se envio la compra!');
+
+        $resultado = null;
+        $db = null;
+    } catch (PDOException $e) {
+        echo '{"error": {"text":' . $e->getMessage() . '}';
+    }
 });

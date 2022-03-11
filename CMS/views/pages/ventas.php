@@ -1,6 +1,7 @@
 <?php
 
 $transferencias = ControllerTransferencia::ctrMostrarTransferencias();
+$mercado = ControllerMercado::ctrMostrarCompras();
 ?>
 
 <div class="content">
@@ -55,16 +56,17 @@ $transferencias = ControllerTransferencia::ctrMostrarTransferencias();
                                                         $cliente = json_decode($value['cliente']);
 
                                                         echo '
-                                                       <span class="text-info"> Nombre completo: </span> ' . $cliente->nombre . ' ' . $cliente->apellido . '</br>
+                                                       <span class="text-info"> Nombre completo: </span> ' . $cliente->nombre . ' ' . $cliente->apellidos . '</br>
                                                        <span class="text-info"> DNI: </span>: ' . $cliente->dni . '</br>  
                                                        <span class="text-info"> Teléfono: </span> ' . $cliente->tel . '</br>     
                                                        <span class="text-info"> Email: </span> ' . $cliente->email . '</br>  
                                                        <span class="text-info"> País: </span> ' . $cliente->pais . '</br> 
                                                        <span class="text-info"> Provincia: </span> ' . $cliente->provincia . '</br>    
-                                                       <span class="text-info"> Ciudad: </span> ' . $cliente->ciudad . '</br>   
+                                                       <span class="text-info"> Ciudad: </span> ' . $cliente->localidad . '</br>   
                                                        <span class="text-info"> Domicilio: </span> ' . $cliente->domicilio . '</br>  
-                                                       <span class="text-info"> Número: </span> ' . $cliente->numero . '.  <span class="text-info"> Piso: </span> :' . $cliente->piso . ' . <span class="text-info"> Dpto: </span>' . $cliente->dpto . '. </br>                                  
-                                                       <span class="text-info"> CP: </span> ' . $cliente->codigo_postal . '</br>      
+                                                       <span class="text-info"> Número: </span> ' . $cliente->numero . '</br>     
+                                                   
+                                                       <span class="text-info"> CP: </span> ' . $cliente->codigo . '</br>      
                                                             ';
 
 
@@ -72,11 +74,11 @@ $transferencias = ControllerTransferencia::ctrMostrarTransferencias();
                                                     <td><?php
                                                         $productos = json_decode($value['productos']);
 
-                                                        $items = $productos->items;
+                                                        // $items = $productos->items;
 
-                                                        $items2 = json_encode($items[0]);
+                                                        $items = json_encode($productos[0]);
 
-                                                        $productosFinal = array(json_decode($items2));
+                                                        $productosFinal = array(json_decode($items));
 
                                                         $numero = count($productosFinal);
 
@@ -97,18 +99,13 @@ $transferencias = ControllerTransferencia::ctrMostrarTransferencias();
                                                     <td><?php
                                                         $envio = json_decode($value['envio']);
 
-
-                                                        if ($envio->transporte == 'Cruz del Sur') {
-                                                            if ($envio->tipo_envio == 'E') {
-                                                                echo '
-                                                                <span class="ml-3">
-                                                                <span class="text-info"> Empresa: </span> ' . $envio->transporte . ',   
-                                                                <span class="text-info"> Tipo de entrega: </span> Domicilio,
-                                                                <span class="text-info"> Costo: </span> $' . $envio->costo . '
-                                                                </span>
-                                                                     ';
-                                                            }
-                                                        }
+                                                        echo '
+                                                        <span class="ml-3">
+                                                        <span class="text-info"> Empresa: </span> ' . $envio->transporte . ',   
+                                                        <span class="text-info"> Tipo de entrega: </span>' . $envio->tipo_envio . ',
+                                                        <span class="text-info"> Costo: </span> $' . $envio->costo . '
+                                                        </span>
+                                                             ';
 
                                                         ?></td>
                                                     <td>$<?php echo $value['total']; ?> (-20% de descuento)</td>
@@ -131,34 +128,88 @@ $transferencias = ControllerTransferencia::ctrMostrarTransferencias();
                                 </div>
                                 <div class="card-body">
 
-                                    <!-- <table id="example2" class="table table-striped  display responsive nowrap" style="width:100%">
+                                    <table id="example2" class="table table-striped  display responsive nowrap" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>First name</th>
-                                                <th>Last name</th>
-                                                <th>Position</th>
-                                                <th>Office</th>
-                                                <th>Age</th>
-                                                <th>Start date</th>
-                                                <th>Salary</th>
-                                                <th>Extn.</th>
-                                                <th>E-mail</th>
+                                                <th>#</th>
+                                                <th>N° Operación</th>
+                                                <th>Cliente</th>
+                                                <th>Produtos</th>
+                                                <th>Envio</th>
+                                                <th>Total</th>
+                                                <th>N° Transacción</th>
+                                                <th>Fecha</th>
+                                                <th>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>Tiger</td>
-                                                <td>Nixon</td>
-                                                <td>System Architect</td>
-                                                <td>Edinburgh</td>
-                                                <td>61</td>
-                                                <td>2011/04/25</td>
-                                                <td>$320,800</td>
-                                                <td>5421</td>
-                                                <td>t.nixon@datatables.net</td>
-                                            </tr>
+                                            <?php foreach ($mercado as $key => $value) : ?>
+                                                <tr>
+                                                    <td><?php echo $key + 1 ?></td>
+                                                    <td>#<?php echo $value['operacion']; ?></td>
+                                                    <td><?php
+                                                        $cliente = json_decode($value['cliente']);
+
+                                                        echo '
+                                                       <span class="text-info"> Nombre completo: </span> ' . $cliente->nombre . ' ' . $cliente->apellidos . '</br>
+                                                       <span class="text-info"> DNI: </span>: ' . $cliente->dni . '</br>  
+                                                       <span class="text-info"> Teléfono: </span> ' . $cliente->tel . '</br>     
+                                                       <span class="text-info"> Email: </span> ' . $cliente->email . '</br>  
+                                                       <span class="text-info"> País: </span> ' . $cliente->pais . '</br> 
+                                                       <span class="text-info"> Provincia: </span> ' . $cliente->provincia . '</br>    
+                                                       <span class="text-info"> Ciudad: </span> ' . $cliente->localidad . '</br>   
+                                                       <span class="text-info"> Domicilio: </span> ' . $cliente->domicilio . '</br>  
+                                                       <span class="text-info"> Número: </span> ' . $cliente->numero . '</br>     
+                                                   
+                                                       <span class="text-info"> CP: </span> ' . $cliente->codigo . '</br>      
+                                                            ';
+
+
+                                                        ?></td>
+                                                    <td><?php
+                                                        $productos = json_decode($value['items']);
+
+                                                        // $items = $productos->items;
+
+                                                        // $items = json_encode($productos[0]);
+
+                                                        $productosFinal = array($productos);
+
+                                                        $numero = count($productosFinal);
+
+
+                                                        for ($i = 0; $i < $numero; $i++) {
+
+                                                            echo '
+                                                            <span class="text-info"> Nombre del producto: </span> ' . $productosFinal[$i]->titulo . '</br>
+                                                            <span class="text-info"> Precio: </span> $' . $productosFinal[$i]->precio . '</br>
+                                                            <span class="text-info"> Cantidad: </span>' . $productosFinal[$i]->cantidad . '</br>
+                                                             ';
+                                                        }
+
+                                                        ?></td>
+                                                    <td><?php
+                                                        $envio = json_decode($value['envio']);
+
+                                                        echo '
+                                                        <span class="ml-3">
+                                                        <span class="text-info"> Empresa: </span> ' . $envio->transporte . ',   
+                                                        <span class="text-info"> Tipo de entrega: </span>' . $envio->tipo_envio . ',
+                                                        <span class="text-info"> Costo: </span> $' . $envio->costo . '
+                                                        </span>
+                                                             ';
+
+                                                        ?></td>
+                                                    <td>$<?php echo $value['total']; ?></td>
+                                                    <td>#<?php echo $value['num_transaccion']; ?></td>
+                                                    <td><?php echo $value['fecha']; ?></td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="borrarVentaMercado(<?php echo $value['id']; ?>)"><i class="fa fa-trash"></i></button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
                                         </tbody>
-                                    </table> -->
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -212,5 +263,12 @@ $transferencias = ControllerTransferencia::ctrMostrarTransferencias();
 
 $borrarTra = new ControllerTransferencia();
 $borrarTra->ctrBorrarVentaTransferencia();
+
+?>
+
+<?php
+
+$borrarMer = new ControllerMercado();
+$borrarMer->ctrBorrarVentaMercado();
 
 ?>
